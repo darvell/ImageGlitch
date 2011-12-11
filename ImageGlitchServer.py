@@ -24,8 +24,8 @@ def uploaded_file(filename):
 def upload_file():
   if request.method == 'POST':
     file = request.files['file']
-    chance = 25
-    length = 2
+    chance = 70
+    length = 4
     seed = 420
     try:
       chance = int(request.form.get('chance'))
@@ -34,7 +34,7 @@ def upload_file():
     except:
       pass
       
-    if chance > 100 or length > 10:
+    if chance > 98 or length > 10:
       return 'idiot dont exceed the values'
     
     if str(request.form.get('url')) != "":
@@ -77,11 +77,11 @@ def upload_file():
   <form action="" method=post enctype=multipart/form-data>
     <p>File: <input type=file name=file><br>
     Or URL: <input type=text name=url><br>
-       <br>Percent chance of corrupting data (Max: 100%)<input type=text name=chance>
+       <br>Percent chance of corrupting data (Max: 98%)<input type=text name=chance>
        <br>Max amount of data to write (Max 10):<input type=text name=datalength> <br>
     Seed value (use a number): <input type=text name=randseed><br>
      <input type=submit value=Upload>
-     <br> Good params are 25% chance and 2 data write.
+     <br> Good params are 75-90% chance and 4 data write.
   </form>
   '''
 
