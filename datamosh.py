@@ -3,6 +3,7 @@ import os
 import random
 import shutil
 import time
+import math
 
 # todo: proper differentiate
 def CurrentDirectory():
@@ -13,16 +14,19 @@ def CurrentDirectory():
 
 def CorruptImage(filename,chance,maxlen):
   with open(filename,"r+b") as f:
-    filesize = os.path.getsize(filename)
-    #start at 10% in so we dont mess with the header, seems to work well.
-    start = (filesize / 100) * 10
+    filesize = os.path.getsize(filename) - 1
+    chance /= 100
+    chance = 1-chance;
+    result = (chance*filesize) + 1
+    chance = int(math.floor(result))
+
+    start = (filesize / 100) * 5
     end = (filesize / 100) * 95
     for i in range(start,end):
       if(random.randint(0,chance) == 1):
         f.seek(i)
         for i in range(0,random.randint(1,maxlen)):
           f.write(hex(random.randint(0,255)))
-
 
 def ValidFileCheck(filename):
   try:
