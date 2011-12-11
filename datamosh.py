@@ -17,16 +17,12 @@ def CorruptImage(filename,chance,maxlen):
     filesize = os.path.getsize(filename) - 1
     chance /= 100
     chance = 1-chance;
-    result = (chance*filesize) + 1
-    chance = int(math.floor(result))
-
-    start = (filesize / 100) * 5
-    end = (filesize / 100) * 95
-    for i in range(start,end):
-      if(random.randint(0,chance) == 1):
-        f.seek(i)
-        for i in range(0,random.randint(1,maxlen)):
-          f.write(hex(random.randint(0,255)))
+    result = int(math.floor((chance*filesize) + 1))
+    i = int(random.randint(0,result-1))
+    while i < filesize:
+      f.seek(i)
+      f.write(hex(random.randint(0,255)))
+      i += random.randint(1,result)
 
 def ValidFileCheck(filename):
   try:
