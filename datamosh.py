@@ -21,7 +21,8 @@ def CorruptImage(filename,chance,maxlen):
     i = int(random.randint(0,result-1))
     while i < filesize:
       f.seek(i)
-      f.write(hex(random.randint(0,255)))
+      for i in range(0,maxlen):
+        f.write(hex(random.randint(0,255)))
       i += random.randint(1,result)
 
 def ValidFileCheck(filename):
