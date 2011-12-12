@@ -3,6 +3,7 @@ from flask import Flask, request, redirect, url_for,send_from_directory
 from werkzeug import secure_filename
 import datamosh
 import urllib
+import random
 
 UPLOAD_FOLDER = str(os.getcwd())
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
