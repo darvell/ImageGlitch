@@ -27,7 +27,7 @@ def upload_file():
     file = request.files['file']
     chance = 70
     chance = random.randint(50,90)
-    length = random.randint(1,10)
+    length = random.randint(1,20)
     seed = random.randint(0,10000000)
     try:
       chance = int(request.form.get('chance'))
@@ -36,7 +36,7 @@ def upload_file():
     except:
       pass
       
-    if chance > 98 or length > 10:
+    if chance > 98 or length > 100:
       return 'idiot dont exceed the values'
     
     if str(request.form.get('url')) != "":
@@ -80,11 +80,12 @@ def upload_file():
     <p>File: <input type=file name=file><br>
     Or URL: <input type=text name=url><br>
        <br>Percent chance of corrupting data (Max: 98%)<input type=text name=chance>
-       <br>Max amount of data to write (Max 10):<input type=text name=datalength> <br>
+       <br>Max amount of data to write (Max 100):<input type=text name=datalength> <br>
     Seed value (use a number): <input type=text name=randseed><br>
      <input type=submit value=Upload>
      <br> Good params are 75-90% chance and 4 data write.
      <br> Values are random if left blank.
+     <br> Try and use a high write value on big images to ensure corruption. Low values on small images.
   </form>
   '''
 
