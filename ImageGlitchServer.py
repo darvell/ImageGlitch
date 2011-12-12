@@ -25,8 +25,9 @@ def upload_file():
   if request.method == 'POST':
     file = request.files['file']
     chance = 70
-    length = 4
-    seed = 420
+    chance = random.randint(50,90)
+    length = random.randint(1,10)
+    seed = random.randint(0,10000000)
     try:
       chance = int(request.form.get('chance'))
       length = int(request.form.get('datalength'))
@@ -82,6 +83,7 @@ def upload_file():
     Seed value (use a number): <input type=text name=randseed><br>
      <input type=submit value=Upload>
      <br> Good params are 75-90% chance and 4 data write.
+     <br> Values are random if left blank.
   </form>
   '''
 
