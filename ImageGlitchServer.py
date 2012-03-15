@@ -1,11 +1,11 @@
 import os
-from flask import Flask, request, redirect, url_for,send_from_directory
+from flask import Flask, request, redirect, url_for,send_from_directory,render_template
 from werkzeug import secure_filename
 import datamosh
 import urllib
 import random
 
-UPLOAD_FOLDER = str(os.getcwd())
+UPLOAD_FOLDER = datamosh.CurrentDirectory()
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
 
 app = Flask(__name__)
@@ -24,72 +24,45 @@ def uploaded_file(filename):
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
   if request.method == 'POST':
-    file = request.files['file']
-    chance = 70
+    # Not actually possible at the moment...
+    if 'files' in request.files.keys():
+      file = request.files['file']
+    else:
+      file = False
     chance = random.randint(50,90)
     length = random.randint(1,20)
-    seed = random.randint(0,10000000)
-    try:
+    seed = random.randint(0,420)
+    huff = False
+    if request.form.get('chance'):
       chance = int(request.form.get('chance'))
+    if request.form.get('seed'):
+      seed = int(request.form.get('seed'))
+    if request.form.get('datalength'):
       length = int(request.form.get('datalength'))
-      seed = int(request.form.get('randseed'))
-    except:
-      pass
-      
+    if request.form.get('huff'):
+      if request.form.get('huff') == "true":
+        huff = True
+
     if chance > 98 or length > 20:
-      return 'idiot dont exceed the values'
+      return 'HACKER'
     
     if str(request.form.get('url')) != "":
         url = request.form.get('url')
         webFile = urllib.urlopen(url)
-        localFile = open(secure_filename(url.split('/')[-1]), 'wb')
+        localFile = open(UPLOAD_FOLDER + secure_filename(url.split('/')[-1]), 'wb')
         if url.split('/')[-1][len(url.split('/')[-1]) - 3:len(url.split('/')[-1])] not in ALLOWED_EXTENSIONS:
-          return 'Invalid remote image.'
+          return 'invalid.png'
         localFile.write(webFile.read())
         webFile.close()
         localFile.close()
-        result = datamosh.ProcessImage(secure_filename(url.split('/')[-1]),chance,length,30,seed)
-        if result == 'CANTGLITCH':
-           return 'Your paramaters are terrible, I can\'t glitch this and keep the file valid.'
-        if result == 'INVALID':
-           return 'This file is not considered valid. Why? Who cares.'
-        else:
-           return redirect(url_for('uploaded_file',filename=result))
-
-
-
-
+        result = datamosh.ProcessImage(secure_filename(url.split('/')[-1]),chance,length,3,seed,huff)
+        return result
     if file and allowed_file(file.filename):
       filename = secure_filename(file.filename)
       file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-      result = datamosh.ProcessImage(filename,float(chance),length,30,seed)
-      if result == 'CANTGLITCH':
-        return 'Your paramaters are terrible, I can\'t glitch this and keep the file valid.'
-      if result == 'INVALID':
-        return 'This file is not considered valid. Why? Who cares.'
-      else:
-           return redirect(url_for('uploaded_file',filename=result))
-  
-
-  
-  return '''
-  <!doctype html>
-  <title>Image Glitch</title>
-  <h1>Upload a file idiot</h1>
-  <form action="" method=post enctype=multipart/form-data>
-    <p>File: <input type=file name=file><br>
-    Or URL: <input type=text name=url><br>
-       <br>Percent chance of corrupting data (Max: 98%)<input type=text name=chance>
-       <br>Max amount of data to write (Max 20):<input type=text name=datalength> <br>
-    Seed value (use a number): <input type=text name=randseed><br>
-     <input type=submit value=Upload>
-     <br> Good params are 75-90% chance and 4 data write.
-     <br> Values are random if left blank.
-     <br> Try and use a high write value on big images to ensure corruption. Low values on small images.
-  </form>
-  '''
-
-
+      result = datamosh.ProcessImage(filename,float(chance),length,3,seed,huff)
+      return result
+  return render_template('index.html')
 
 if __name__ == '__main__':
   app.run()
